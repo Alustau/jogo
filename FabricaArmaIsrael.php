@@ -95,7 +95,6 @@ class FabricaArmaIsrael extends FabricaArma {
                 return true;
             default:
                 throw new Exception('Esse tipo de arma nao existe');
-
         }
     }
     
