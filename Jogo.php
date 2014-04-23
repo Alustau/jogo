@@ -15,12 +15,16 @@ $jogador2 = new Samurai('Kevin');
 
 $fabricaArmaIsrael = FabricaArmaIsrael::getInstance();
 try{
-    $jogador1->comprar($fabricaArmaIsrael,'Espada');
+    $jogador1->comprar($fabricaArmaIsrael,'Fuzil',12);
 }catch (Exception $e){
     $compra = '<br>'.$e->getMessage();
     echo $compra;
 }
+
 $jogador1->ataque($jogador2);
+echo '<br>';
+
+echo $fabricaArmaIsrael->getEstoqueFuzil();
 
 
 //try{

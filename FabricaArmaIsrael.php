@@ -16,12 +16,16 @@ require_once 'FabricaArma.php';
 class FabricaArmaIsrael extends FabricaArma {
     //esse atributo tem que ser estático e privado porque ela vai ser unica na aplicação
     private static $instance;
-    private static $estoqueFuzil = 10;
+    private static $estoqueFuzil = 3;
     private static $estoqueEspada = 12;
     protected $carteira = 5000;
     
-    
-    
+//    public static function  getEstoqueFuzil() 
+//    {
+//        return self::$estoqueFuzil;
+//    }
+
+
     //construtor privado para não poder ser instanciado, a não ser atraves do metodo abaixo
     private function __construct() {}
     
@@ -63,7 +67,7 @@ class FabricaArmaIsrael extends FabricaArma {
             case 'Fuzil':
                 //verifica se o estoque de Fuzil é maior que zero 
                 if(self::$estoqueFuzil <= 0) {
-                    return false;
+                    throw new Exception('Estoque de '.$tipo.' esta vazio!');
                 }
                 /* Obs: a quantidade de fuzil está estatico, ou seja, caso houvesse
                 * uma conexão com o banco de dados, poderia alterar o valor do 
@@ -81,7 +85,7 @@ class FabricaArmaIsrael extends FabricaArma {
 
             case 'Espada':
                 if(self::$estoqueEspada <= 0) {
-                    return false;
+                    throw new Exception('Estoque de '.$tipo.' esta vazio!');
                 }
 
                 $valorEspada = self::getArma($tipo)->getPreco();
@@ -90,11 +94,12 @@ class FabricaArmaIsrael extends FabricaArma {
 
                 return true;
             default:
-                return false;
+                throw new Exception('Esse tipo de arma nao existe');
+
         }
     }
     
-    public function getEstoqueFuzil(){
+    public function getEstoqueFuzil() {
         return self::$estoqueFuzil;
     }
     public function setEstoqueFuzil($quantidade){

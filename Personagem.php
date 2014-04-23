@@ -92,18 +92,20 @@ abstract class Personagem {
             throw new Exception('Voce não possui dinheiro o suficiente pra comprar esta arma');
         }
         //vende a arma
-        $venda = $fabricaArma->venderArma(get_class($arma));
+        try {
+            $venda = $fabricaArma->venderArma(get_class($arma));
+        } catch (ErrorException $e) {
+            throw $e;
+        }
         
         //se foi efetivada a venda
-        if ($venda) {
-            try {
-                $this->setArma($arma);
-            } catch (Exception $e) {
-                throw $e;
-            }
-            //retira o dinheiro referente ao valor da arma da carteira
-            $this->carteira -= $valorArma;
+        try {
+            $this->setArma($arma);
+        } catch (Exception $e) {
+            throw $e;
         }
+        //retira o dinheiro referente ao valor da arma da carteira
+        $this->carteira -= $valorArma;
     }
     
     public function getLife(){
