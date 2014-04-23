@@ -20,6 +20,8 @@ class FabricaArmaIsrael extends FabricaArma {
     private static $estoqueEspada = 12;
     protected $carteira = 5000;
     
+    
+    
     //construtor privado para não poder ser instanciado, a não ser atraves do metodo abaixo
     private function __construct() {}
     
@@ -58,39 +60,38 @@ class FabricaArmaIsrael extends FabricaArma {
     public function venderArma($tipo)
     {
         switch($tipo) {
-           case 'Fuzil':
-               //verifica se o estoque de Fuzil é maior que zero 
-               if(self::$estoqueFuzil > 0) {
-                   
-                   /* Obs: a quantidade de fuzil está estatico, ou seja, caso houvesse
-                    * uma conexão com o banco de dados, poderia alterar o valor do 
-                    * estoque na propria tabela */
-                   
-                   //pega uma instancia do objeto atraves do Factory Method
-                   $valorFuzil = self::getArma($tipo)->getPreco();
-                   //aqui adiciona na carteira o valor do Fuzil.
-                   $this->carteira += $valorFuzil; 
-                   //retira do estoque o fuzil
-                   self::$estoqueFuzil--;
-                   //retorna a quantidade de estoque
-                   return self::$estoqueFuzil;
-               }else{
-                   //caso não tenha estoque, cria uma Exceção com a frase abaixo
-                   throw new Exception('Estoque de '.$tipo.' esta vazio!');
-               }
-           case 'Espada':
-               if(self::$estoqueEspada > 0) {
-                   $valorEspada = self::getArma($tipo)->getPreco();
-                   $this->carteira += $valorEspada; 
-                   self::$estoqueEspada--; 
-                   
-                   return self::$estoqueEspada;
-               }else{
-                   throw new Exception('Estoque de '.$tipo.' esta vazio!');
-               }
-           default:
-               throw new Exception('Esse tipo de arma nao existe');
-       }
+            case 'Fuzil':
+                //verifica se o estoque de Fuzil é maior que zero 
+                if(self::$estoqueFuzil <= 0) {
+                    return false;
+                }
+                /* Obs: a quantidade de fuzil está estatico, ou seja, caso houvesse
+                * uma conexão com o banco de dados, poderia alterar o valor do 
+                * estoque na propria tabela */
+
+                //pega uma instancia do objeto atraves do Factory Method
+                $valorFuzil = self::getArma($tipo)->getPreco();
+                //aqui adiciona na carteira o valor do Fuzil.
+                $this->carteira += $valorFuzil; 
+                //retira do estoque o fuzil
+                self::$estoqueFuzil--;
+                //retorna a quantidade de estoque
+
+                return true;
+
+            case 'Espada':
+                if(self::$estoqueEspada <= 0) {
+                    return false;
+                }
+
+                $valorEspada = self::getArma($tipo)->getPreco();
+                $this->carteira += $valorEspada; 
+                self::$estoqueEspada--; 
+
+                return true;
+            default:
+                return false;
+        }
     }
     
     public function getEstoqueFuzil(){

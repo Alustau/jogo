@@ -14,9 +14,8 @@ $jogador1 = new Soldado('Denis');
 $jogador2 = new Samurai('Kevin');
 
 $fabricaArmaIsrael = FabricaArmaIsrael::getInstance();
-//var_dump($fabricaArmaIsrael);
 try{
-    $jogador1->comprar($fabricaArmaIsrael,'Fuzil',12);
+    $jogador1->comprar($fabricaArmaIsrael,'Espada');
 }catch (Exception $e){
     $compra = '<br>'.$e->getMessage();
     echo $compra;

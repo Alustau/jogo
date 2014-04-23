@@ -17,10 +17,10 @@ class Fuzil extends Arma {
             foreach ($attributes as $key => $value){
                 $this->{$key} = $value;
             }
-            
-        } else {
-            $this->quantidadeMunicao = $attributes;
+            return;
         }
+        
+        $this->quantidadeMunicao = $attributes;
     }
 
     public function usar($inimigoNome) {

@@ -54,11 +54,10 @@ abstract class Personagem {
             //cria uma exceção com a mensagema abaixo
             throw new Exception($this->nome.' nao pode usar arma do tipo ' . get_class($arma));
         }
+   
         //coloca a arma no Personagem 
         $this->arma = $arma;
         echo '<br>'.$this->nome.' comprou um(a) '.get_class($arma);
-        
-        return true;
     }
     
     /* Este metodo abaixo faz uma compra a uma fabrica!
@@ -67,47 +66,43 @@ abstract class Personagem {
      * $tipoDeArma: O tipo da arma;
      * $parametros : pode ser um array com os atributos da arma 
      */
-    public function comprar(FabricaArma $fabricaArma,$tipoDeArma, $parametros = null){    
-        //guarda a carteira
-        $carteira = $this->carteira;
-        //se tiver dinheiro na carteira 
-        if($carteira > 0 ){
-            //se ja tiver arma 
-            if($this->arma != null){
-                //cria uma exceção com a mensagem abaixo
-                throw new Exception('Voce ja possui um(a) '.  get_class($this->arma));
-            //se não tiver arma
-            }else{
-                //pega uma arma atraves do Factory Method com o tipo e os parametros
-                $arma = $fabricaArma->getArma($tipoDeArma,$parametros);
-                //se existir a arma 
-                if($arma){
-                    //pega o valor dela
-                    $valorArma = $arma->getPreco();
-                    
-                    /* se o valor da arma eh menor ou igual do que o valor que 
-                     * esta na carteira */
-                    if($valorArma <= $this->carteira){
-                        
-                        $aux = $fabricaArma->venderArma(get_class($arma));
-                        //se setar a arma
-                        if($aux){
-                            if($this->setArma($arma)){
-                            //retira o valor da arma da carteira
-                            $this->carteira -= $valorArma;
-                            //retira do estoque da fabrica  
-                            }
-                        }
-                        
-                    //senao ele cria uma exceção com a mensagem abaixo    
-                    }else{
-                        throw new Exception('Voce nao possui dinheiro suficiente para compra um(a)'.  get_class($arma));
-                    }
-                }
-            }
-        //senao ele cria uma exceção com a mensagem abaixo
-        }else{
+    public function comprar(FabricaArma $fabricaArma, $tipoDeArma, $parametros = null) 
+    {
+        //se estiver sem dinheiro na carteira, lança uma exceção
+        if ($this->carteira <= 0) {
             throw new Exception('Voce esta sem dinheiro na carteira');
+        }
+        //se ja tiver arma, lança uma exceção
+        if($this->arma){
+            throw new Exception('Voce ja possui um(a) '.  get_class($this->arma));
+        }
+        
+        //verificando se existe esse tipo de arma na fabrica passada
+        try {
+            $arma = $fabricaArma->getArma($tipoDeArma,$parametros);
+        } catch (Exception $e) {
+            throw $e;
+        }
+        
+        //guarda o valor da arma
+        $valorArma = $arma->getPreco();
+        
+        //verifica se tem dinheiro suficiente pra comprar a arma
+        if ($this->carteira < $valorArma) {
+            throw new Exception('Voce não possui dinheiro o suficiente pra comprar esta arma');
+        }
+        //vende a arma
+        $venda = $fabricaArma->venderArma(get_class($arma));
+        
+        //se foi efetivada a venda
+        if ($venda) {
+            try {
+                $this->setArma($arma);
+            } catch (Exception $e) {
+                throw $e;
+            }
+            //retira o dinheiro referente ao valor da arma da carteira
+            $this->carteira -= $valorArma;
         }
     }
     
